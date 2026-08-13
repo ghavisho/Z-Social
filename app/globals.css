@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Vazirmatn", "Inter", system-ui, sans-serif;
+
+  /* ---------- Light mode (default) ---------- */
+  --color-surface: 255 255 255;        /* #FFFFFF */
+  --color-surface-muted: 247 246 250;  /* #F7F6FA */
+  --color-ink: 28 26 34;               /* #1C1A22 */
+  --color-ink-muted: 107 103 117;      /* #6B6775 */
+  --color-ink-inverted: 255 255 255;
+  --color-charcoal: 42 39 49;          /* #2A2731 */
+
+  /* Accent quad — overridden per-preset by [data-accent] below (spec: user
+     can change the app's main color from Settings). */
+  --color-y-deep: 59 30 109;      /* #3B1E6D */
+  --color-y-royal: 110 58 209;    /* #6E3AD1 */
+  --color-y-lavender: 185 166 232;/* #B9A6E8 */
+  --color-y-soft: 241 236 251;    /* #F1ECFB */
+}
+
+/* ---------- Dark mode ---------- */
+.dark {
+  --color-surface: 21 18 28;         /* #15121C */
+  --color-surface-muted: 30 25 39;   /* #1E1927 */
+  --color-ink: 240 238 245;          /* near-white */
+  --color-ink-muted: 168 164 178;    /* muted lavender-grey */
+  --color-ink-inverted: 28 26 34;
+  --color-charcoal: 210 206 220;
+
+  --color-y-soft: 42 34 58;          /* dark muted-purple background */
+}
+
+/* ---------- Accent presets (Settings → Appearance) ---------- */
+/* Default is the purple quad already set in :root — these override it. */
+[data-accent="blue"]    { --color-y-deep: 30 58 109;   --color-y-royal: 37 99 235;   --color-y-lavender: 147 197 253; --color-y-soft: 236 245 255; }
+[data-accent="green"]   { --color-y-deep: 20 83 45;    --color-y-royal: 22 163 74;   --color-y-lavender: 134 239 172; --color-y-soft: 236 253 245; }
+[data-accent="rose"]    { --color-y-deep: 136 19 55;   --color-y-royal: 225 29 72;   --color-y-lavender: 253 164 175; --color-y-soft: 255 241 242; }
+[data-accent="amber"]   { --color-y-deep: 120 53 15;   --color-y-royal: 217 119 6;   --color-y-lavender: 252 211 77;  --color-y-soft: 255 251 235; }
+[data-accent="teal"]    { --color-y-deep: 19 78 74;    --color-y-royal: 13 148 136;  --color-y-lavender: 153 246 228; --color-y-soft: 240 253 250; }
+
+.dark[data-accent="blue"]  { --color-y-soft: 20 30 55; }
+.dark[data-accent="green"] { --color-y-soft: 15 40 28; }
+.dark[data-accent="rose"]  { --color-y-soft: 45 15 25; }
+.dark[data-accent="amber"] { --color-y-soft: 45 32 10; }
+.dark[data-accent="teal"]  { --color-y-soft: 12 40 38; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-surface-light text-ink antialiased;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+/* Respect reduced-motion preference (spec §52 accessibility) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus visibility for keyboard navigation */
+:focus-visible {
+  outline: 2px solid theme("colors.y.royal");
+  outline-offset: 2px;
+}
