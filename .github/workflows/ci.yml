@@ -1,0 +1,48 @@
+name: Z — CI
+
+# This is the closest thing to "Claude actually running npm install" —
+# GitHub's servers have real internet access (this sandbox doesn't), so
+# pushing to GitHub is the fastest way to get a real, authoritative
+# pass/fail on the build without needing anything installed locally.
+#
+# Once this file is in your repo, every push and pull request automatically
+# runs install → lint → test → build. Check the "Actions" tab on GitHub to
+# see results (green check = safe to deploy, red X = click in for the
+# exact error).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+        continue-on-error: true # style issues shouldn't block the build check
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build
+        env:
+          # Dummy values so `next build` can statically analyze pages that
+          # reference these — real secrets are only needed at runtime on
+          # Vercel, not for the build step itself to succeed.
+          NEXT_PUBLIC_SUPABASE_URL: "https://placeholder.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "placeholder-anon-key"
+          SUPABASE_SERVICE_ROLE_KEY: "placeholder-service-role-key"
+        run: npm run build
